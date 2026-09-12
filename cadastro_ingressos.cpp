@@ -100,6 +100,55 @@ string lerNomeValidado() {
     return string(buffer_nome);
 }
 
+// Le uma linha via cin.getline e valida que contem exatamente 11
+// digitos numericos. Quando checarDuplicidade e true, tambem rejeita
+// um CPF ja presente em vetor[0..total). O prompt inicial e impresso
+// pelo chamador; esta funcao so reimprime as mensagens de erro.
+string lerCpfValidado(const eventos vetor[], int total, bool checarDuplicidade) {
+    char buffer_cpf[20];
+    bool cpf_valido = false;
+
+    while (!cpf_valido) {
+        cin.getline(buffer_cpf, 20);
+
+        int tamanho = strlen(buffer_cpf);
+        int qtd_digitos = 0;
+        bool apenas_numeros = true;
+
+        for (int i = 0; i < tamanho; i++) {
+            if (buffer_cpf[i] >= '0' and buffer_cpf[i] <= '9') {
+                qtd_digitos++;
+            } else {
+                apenas_numeros = false;
+            }
+        }
+
+        if (qtd_digitos == 11 and apenas_numeros) {
+            if (checarDuplicidade) {
+                bool cpf_existente = false;
+                int i = 0;
+                while (i < total and !cpf_existente) {
+                    if (vetor[i].cpf == buffer_cpf) {
+                        cpf_existente = true;
+                    }
+                    i++;
+                }
+                if (cpf_existente) {
+                    cout << "\033[1;31mCPF ja cadastrado, por favor tente outro!\033[0m" << endl;
+                } else {
+                    cpf_valido = true;
+                }
+            } else {
+                cpf_valido = true;
+            }
+        } else {
+            cout << "\033[1;31mCPF invalido. Digite novamente (somente numeros, 11 digitos): \033[0m" << endl;
+        }
+    }
+
+    return string(buffer_cpf);
+}
+
 void salvar_no_arquivo(eventos dados[], int total) {
     ofstream arquivo("arquivo_csv_projeto.csv");
     if (!arquivo) {
@@ -229,42 +278,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
     novo.nome = lerNomeValidado();
 
     cout << "\033[38;5;208mSeu CPF, sem .(ponto) e -(traco): \033[0m" << endl;
-    bool cpf_valido = false;
-    while (!cpf_valido) {
-        char buffer_cpf[20];
-        cin.getline(buffer_cpf, 20);
-        novo.cpf = buffer_cpf;
-
-        int tamanho = novo.cpf.size();
-        int qtd_digitos = 0;
-        bool apenas_numeros = true;
-
-        for (int i = 0; i < tamanho; i++) {
-            if (novo.cpf[i] >= '0' and novo.cpf[i] <= '9') {
-                qtd_digitos++;
-            } else {
-                apenas_numeros = false;
-            }
-        }
-        if (qtd_digitos == 11 and apenas_numeros) {
-            bool cpf_existente = false;
-            int i = 0;
-            while (i < numRegistro and !cpf_existente) {
-                if (novo.cpf == vetor[i].cpf) {
-                    cpf_existente = true;
-                }
-                i++;
-            }
-            if (cpf_existente) {
-                cout << "\033[1;31mCPF ja cadastrado, por favor tente outro!\033[0m" << endl;
-                cpf_valido = false;
-            } else {
-                cpf_valido = true;
-            }
-        } else {
-            cout << "\033[1;31mCPF invalido. Digite novamente (somente numeros, 11 digitos): \033[0m" << endl;
-        }
-    }
+    novo.cpf = lerCpfValidado(vetor, numRegistro, true);
 
     bool ano_valido = false;
 
@@ -425,30 +439,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                 dados[indice_encontrado].nome = lerNomeValidado();
 
                 cout << "\033[38;5;208mCPF: \033[0m" << endl;
-                bool cpf_valido = false;
-                while (!cpf_valido) {
-                    char buffer_cpf[20];
-                    cin.getline(buffer_cpf, 20);
-                    dados[indice_encontrado].cpf = buffer_cpf;
-
-                    int tamanho = dados[indice_encontrado].cpf.size();
-                    int qtd_digitos = 0;
-                    bool apenas_numeros = true;
-
-                    for (int i = 0; i < tamanho; i++) {
-                        if (dados[indice_encontrado].cpf[i] >= '0' and dados[indice_encontrado].cpf[i] <= '9') {
-                            qtd_digitos++;
-                        } else {
-                            apenas_numeros = false;
-                        }
-                    }
-
-                    if (qtd_digitos == 11 and apenas_numeros) {
-                        cpf_valido = true;
-                    } else {
-                        cout << "\033[1;31mCPF invalido. Digite novamente (somente numeros, 11 digitos): \033[0m" << endl;
-                    }
-                }
+                dados[indice_encontrado].cpf = lerCpfValidado(dados, numRegistro, false);
                     
                 bool ano_valido = false;
 
