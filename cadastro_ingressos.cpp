@@ -281,13 +281,9 @@ void imprimeRegistro(const eventos& registro) {
     cout << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
 }
 
-// Imprime o resumo "LOGIN" de um registro apos cadastro/edicao.
-// cabecalho e recebido pronto (com cor) porque o texto varia entre
-// chamadores: "SEU LOGIN:" em cadastro_novo_usuario/editar_usuario_CPF
-// e apenas "LOGIN:" em editar_dados_Id - inconsistencia pre-existente
-// preservada aqui.
-void imprimeResumoLogin(const eventos& registro, const string& cabecalho) {
-    cout << cabecalho << endl
+// Imprime o resumo "SEU LOGIN" de um registro apos cadastro/edicao.
+void imprimeResumoLogin(const eventos& registro) {
+    cout << "\033[92mSEU LOGIN:\033[0m" << endl
          << "\033[92mID:\033[0m " << registro.id_usuario << endl
          << "\033[92mNOME:\033[0m " << registro.nome << endl
          << "\033[92mCPF:\033[0m " << registro.cpf << endl
@@ -389,7 +385,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
 
     novo.tipo_evento = escolherEvento(EstiloMenuEvento::CADASTRO);
 
-    imprimeResumoLogin(novo, "\033[92mSEU LOGIN:\033[0m");
+    imprimeResumoLogin(novo);
 
     vetor[numRegistro] = novo;
     salvar_no_arquivo(vetor, numRegistro + 1);
@@ -510,7 +506,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                    
                 dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_ID);
 
-                imprimeResumoLogin(dados[indice_encontrado], "\033[92mLOGIN:\033[0m");
+                imprimeResumoLogin(dados[indice_encontrado]);
 
                 salvar_no_arquivo(dados, numRegistro);
                 cout << "\033[1;32mDados atualizados com sucesso!\033[0m" << endl;
@@ -583,7 +579,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
 
             dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_CPF);
 
-            imprimeResumoLogin(dados[indice_encontrado], "\033[92mSEU LOGIN:\033[0m");
+            imprimeResumoLogin(dados[indice_encontrado]);
 
             // Confirmação antes de salvar
             salvar_no_arquivo(dados, total);
