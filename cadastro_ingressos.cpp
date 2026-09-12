@@ -63,6 +63,43 @@ int lerInteiroValidado(const string& prompt, int minValor, int maxValor, const s
     return valor;
 }
 
+// Le uma linha via cin.getline e valida que contem apenas letras e
+// espacos e nao esta vazia, repetindo o prompt ate ser valido.
+string lerNomeValidado() {
+    char buffer_nome[162];
+    bool nome_valido;
+
+    do {
+        cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
+        cin.getline(buffer_nome, 162);
+
+        nome_valido = true;
+        int tamanho = strlen(buffer_nome);
+
+        // Verifica se está vazio
+        if (tamanho == 0) {
+            cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
+            nome_valido = false;
+        } else {
+            // Verifica cada caractere
+            int i = 0;
+            while (i < tamanho && nome_valido) {
+                char c = buffer_nome[i];
+                if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ')) {
+                    nome_valido = false;
+                }
+                i++;
+            }
+
+            if (!nome_valido) {
+                cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
+            }
+        }
+    } while (strlen(buffer_nome) == 0 || !nome_valido);
+
+    return string(buffer_nome);
+}
+
 void salvar_no_arquivo(eventos dados[], int total) {
     ofstream arquivo("arquivo_csv_projeto.csv");
     if (!arquivo) {
@@ -189,36 +226,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
         }
     }
 
-    bool nome_valido;
-    do {
-        cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
-        char buffer_nome[162];
-        cin.getline(buffer_nome, 162);
-        novo.nome = buffer_nome;
-
-        nome_valido = true;
-        int tamanho = novo.nome.size();
-
-        // Verifica se está vazio
-        if(tamanho == 0) {
-            cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
-            nome_valido = false;
-        } else {
-            // Verifica cada caractere
-            int i = 0;
-            while(i < tamanho && nome_valido) {
-                char c = novo.nome[i];
-                if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ')) {
-                    nome_valido = false;
-                }
-                i++;
-            }
-
-            if(!nome_valido) {
-                cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
-            }
-        }
-    } while(novo.nome.size() == 0 || !nome_valido);
+    novo.nome = lerNomeValidado();
 
     cout << "\033[38;5;208mSeu CPF, sem .(ponto) e -(traco): \033[0m" << endl;
     bool cpf_valido = false;
@@ -414,36 +422,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
             cin.ignore();
             
             if(strcmp(escolha, "s")==0 || strcmp(escolha, "S")==0) {
-                bool nome_valido;
-                do {
-                    cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
-                    char buffer_nome[162];
-                    cin.getline(buffer_nome, 162);
-                    dados[indice_encontrado].nome = buffer_nome;
-
-                    nome_valido = true;
-                    int tamanho = dados[indice_encontrado].nome.size();
-
-                    // Verifica se está vazio
-                    if(tamanho == 0) {
-                        cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
-                        nome_valido = false;
-                    } else {
-                    // Verifica cada caractere
-                        int i = 0;
-                        while(i < tamanho && nome_valido) {
-                            char c = dados[indice_encontrado].nome[i];
-                            if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ')) {
-                                nome_valido = false;
-                            }
-                            i++;
-                        }
-
-                        if(!nome_valido) {
-                        cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
-                        }
-                    }
-                } while(dados[indice_encontrado].nome.size() == 0 || !nome_valido);
+                dados[indice_encontrado].nome = lerNomeValidado();
 
                 cout << "\033[38;5;208mCPF: \033[0m" << endl;
                 bool cpf_valido = false;
@@ -575,44 +554,14 @@ void editar_usuario_CPF(eventos dados[], int total) {
         cout << "\033[1;31mCPF não encontrado.\033[0m" << endl;
         return;
     } else {
-        bool nome_valido;
-
         char resposta;
         cout << "\033[1;31mAo editar os dados, os mesmos ficarao salvos ao termino dessa aplicacao\033[0m" << endl
-             << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou numero para cancelar a operacao \033[0m";        
+             << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou numero para cancelar a operacao \033[0m";
         cin >> resposta;
         cin.ignore();
 
         if (resposta == 's' || resposta == 'S') {
-            do {
-                cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
-                char buffer_nome[162];
-                cin.getline(buffer_nome, 162);
-                dados[indice_encontrado].nome = buffer_nome;
-
-                nome_valido = true;
-                int tamanho = dados[indice_encontrado].nome.size();
-
-                // Verifica se está vazio
-                if(tamanho == 0) {
-                    cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
-                    nome_valido = false;
-                } else {
-                    // Verifica cada caractere
-                    int i = 0;
-                    while(i < tamanho && nome_valido) {
-                        char c = dados[indice_encontrado].nome[i];
-                        if(!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == ' ')) {
-                            nome_valido = false;
-                        }
-                        i++;
-                    }
-
-                    if(!nome_valido) {
-                        cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
-                    }
-                }
-            } while(dados[indice_encontrado].nome.size() == 0 || !nome_valido);
+            dados[indice_encontrado].nome = lerNomeValidado();
 
             bool ano_valido = false;
 
