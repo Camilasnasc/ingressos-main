@@ -149,6 +149,81 @@ string lerCpfValidado(const eventos vetor[], int total, bool checarDuplicidade) 
     return string(buffer_cpf);
 }
 
+// Tabela unica dos eventos disponiveis (indice 0 = evento "1", etc).
+// Nota: o texto do evento 4 tinha duas grafias no codigo original
+// ("Arraia do Povo" em cadastro_novo_usuario/editar_dados_Id e
+// "Arraiá do Povo" em editar_usuario_CPF). Adotamos "Arraia do Povo"
+// (sem acento) como texto canonico por ser a grafia usada em 2 dos 3
+// pontos originais.
+const string NOMES_EVENTOS[5] = {
+    "Anos 80 - Flashback Neon",
+    "Festa Tropical / Luau - Noite Havaiana",
+    "Fantasia - Mundo Encantado",
+    "Festa Junina - Arraia do Povo",
+    "Halloween - Noite do Terror"
+};
+
+// Estilo visual do menu de eventos: cada ponto de chamada original
+// tinha cores/layout proprios (e, no prompt de escolha do estilo
+// EDITAR_ID, um espaco extra antes do texto que ja existia no
+// codigo original) - preservados aqui para nao mudar a saida.
+enum class EstiloMenuEvento { CADASTRO, EDITAR_ID, EDITAR_CPF };
+
+// Imprime o menu de eventos (no estilo do chamador) e le a escolha
+// (1-5) ate ser valida, retornando o nome do evento escolhido.
+string escolherEvento(EstiloMenuEvento estilo) {
+    if (estilo == EstiloMenuEvento::CADASTRO) {
+        cout << "\033[38;5;208mEventos disponiveis:\033[0m" << endl
+             << "\033[1;33m|1 - " << NOMES_EVENTOS[0] << "\033[0m" << endl
+             << "\033[1;33m|2 - " << NOMES_EVENTOS[1] << "\033[0m" << endl
+             << "\033[1;33m|3 - " << NOMES_EVENTOS[2] << "\033[0m" << endl
+             << "\033[1;33m|4 - " << NOMES_EVENTOS[3] << "\033[0m" << endl
+             << "\033[1;33m|5 - " << NOMES_EVENTOS[4] << "\033[0m" << endl;
+    } else {
+        cout << endl << "\033[38;5;208mEscolha o tipo de evento!\033[0m" << endl << endl;
+        cout << "\033[1;36mEventos disponiveis:\033[0m" << endl << endl
+             << "\033[1;38;5;205m1 - " << NOMES_EVENTOS[0] << "\033[0m" << endl
+             << "\033[1;38;5;205m2 - " << NOMES_EVENTOS[1] << "\033[0m" << endl
+             << "\033[1;38;5;205m3 - " << NOMES_EVENTOS[2] << "\033[0m" << endl
+             << "\033[1;38;5;205m4 - " << NOMES_EVENTOS[3] << "\033[0m" << endl
+             << "\033[1;38;5;205m5 - " << NOMES_EVENTOS[4] << "\033[0m" << endl;
+    }
+
+    char escolha_evento[2];
+    bool evento_valido = false;
+    string nomeEscolhido;
+
+    while (!evento_valido) {
+        if (estilo == EstiloMenuEvento::CADASTRO) {
+            cout << "\033[38;5;208mDigite o numero do evento escolhido: \033[0m";
+        } else if (estilo == EstiloMenuEvento::EDITAR_ID) {
+            cout << endl << " \033[38;5;208mDigite o numero do evento escolhido: \033[0m";
+        } else {
+            cout << endl << "\033[38;5;208mDigite o numero do evento escolhido: \033[0m";
+        }
+
+        cin >> escolha_evento;
+        cout << endl;
+        cin.ignore();
+
+        int indice = -1;
+        for (int i = 0; i < 5 && indice == -1; i++) {
+            if (strcmp(escolha_evento, to_string(i + 1).c_str()) == 0) {
+                indice = i;
+            }
+        }
+
+        if (indice != -1) {
+            nomeEscolhido = NOMES_EVENTOS[indice];
+            evento_valido = true;
+        } else {
+            cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
+        }
+    }
+
+    return nomeEscolhido;
+}
+
 void salvar_no_arquivo(eventos dados[], int total) {
     ofstream arquivo("arquivo_csv_projeto.csv");
     if (!arquivo) {
@@ -297,41 +372,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
         }
     }
 
-    char escolha_evento[2];
-    bool evento_valido = false;
-
-    cout << "\033[38;5;208mEventos disponiveis:\033[0m" << endl
-         << "\033[1;33m|1 - Anos 80 - Flashback Neon\033[0m" << endl
-         << "\033[1;33m|2 - Festa Tropical / Luau - Noite Havaiana\033[0m" << endl
-         << "\033[1;33m|3 - Fantasia - Mundo Encantado\033[0m" << endl
-         << "\033[1;33m|4 - Festa Junina - Arraia do Povo\033[0m" << endl
-         << "\033[1;33m|5 - Halloween - Noite do Terror\033[0m" << endl;
-
-    while (!evento_valido) {
-        cout << "\033[38;5;208mDigite o numero do evento escolhido: \033[0m";
-        cin >> escolha_evento;
-        cout << endl;
-        cin.ignore();
-
-        if (strcmp(escolha_evento, "1") == 0) {
-            novo.tipo_evento = "Anos 80 - Flashback Neon";
-            evento_valido = true;
-        } else if (strcmp(escolha_evento, "2") == 0) {
-            novo.tipo_evento = "Festa Tropical / Luau - Noite Havaiana";
-            evento_valido = true;
-        } else if (strcmp(escolha_evento, "3") == 0) {
-            novo.tipo_evento = "Fantasia - Mundo Encantado";
-            evento_valido = true;
-        } else if (strcmp(escolha_evento, "4") == 0) {
-            novo.tipo_evento = "Festa Junina - Arraia do Povo";
-            evento_valido = true;
-        } else if (strcmp(escolha_evento, "5") == 0) {
-            novo.tipo_evento = "Halloween - Noite do Terror";
-            evento_valido = true;
-        } else {
-            cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
-        }
-    }
+    novo.tipo_evento = escolherEvento(EstiloMenuEvento::CADASTRO);
 
     cout << "\033[92mSEU LOGIN:\033[0m" << endl
          << "\033[92mID:\033[0m " << novo.id_usuario << endl
@@ -402,9 +443,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
     int pos_final = numRegistro - 1;
     int meio;
     bool encontrado = false;
-    char escolha_evento[2];
-    bool evento_valido = false;
-   
+
     cout << "\033[38;5;208mInsira o Id procurado: \033[0m";
     cin >> id_procurado;
   
@@ -459,40 +498,8 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                 }
                 cin.ignore();
                    
-                cout << endl << "\033[38;5;208mEscolha o tipo de evento!\033[0m" << endl << endl;
-                cout << "\033[1;36mEventos disponiveis:\033[0m" << endl << endl
-                << "\033[1;38;5;205m1 - Anos 80 - Flashback Neon\033[0m" << endl
-                << "\033[1;38;5;205m2 - Festa Tropical / Luau - Noite Havaiana\033[0m" << endl
-                << "\033[1;38;5;205m3 - Fantasia - Mundo Encantado\033[0m" << endl
-                << "\033[1;38;5;205m4 - Festa Junina - Arraia do Povo\033[0m" << endl
-                << "\033[1;38;5;205m5 - Halloween - Noite do Terror\033[0m" << endl;
-                
-                while (!evento_valido) {
-                    cout << endl << " \033[38;5;208mDigite o numero do evento escolhido: \033[0m";
-                    cin >> escolha_evento;
-                    cout << endl;
-                    cin.ignore();
+                dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_ID);
 
-                    if (strcmp(escolha_evento, "1") == 0) {
-                        dados[indice_encontrado].tipo_evento = "Anos 80 - Flashback Neon";
-                        evento_valido = true;
-                    } else if (strcmp(escolha_evento, "2") == 0) {
-                        dados[indice_encontrado].tipo_evento = "Festa Tropical / Luau - Noite Havaiana";
-                        evento_valido = true;
-                    } else if (strcmp(escolha_evento, "3") == 0) {
-                        dados[indice_encontrado].tipo_evento = "Fantasia - Mundo Encantado";
-                        evento_valido = true;
-                    } else if (strcmp(escolha_evento, "4") == 0) {
-                        dados[indice_encontrado].tipo_evento = "Festa Junina - Arraia do Povo";
-                        evento_valido = true;
-                    } else if (strcmp(escolha_evento, "5") == 0) {
-                        dados[indice_encontrado].tipo_evento = "Halloween - Noite do Terror";
-                        evento_valido = true;
-                    } else {
-                        cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
-                    }
-                }
-                
                 cout << "\033[92mLOGIN:\033[0m" << endl
                      << "\033[92mID:\033[0m " << dados[indice_encontrado].id_usuario << endl
                      << "\033[92mNOME:\033[0m " << dados[indice_encontrado].nome << endl
@@ -513,8 +520,6 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
 }
 
 void editar_usuario_CPF(eventos dados[], int total) {
-    int escolha_evento;
-    bool evento_valido = false;
     char cpf_buscado[20];
     int indice_encontrado = -1;
     int pos_inicial = 0;
@@ -571,39 +576,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
                 }
             }
 
-            cout << endl << "\033[38;5;208mEscolha o tipo de evento!\033[0m" << endl << endl;
-            cout << "\033[1;36mEventos disponiveis:\033[0m" << endl << endl
-                 << "\033[1;38;5;205m1 - Anos 80 - Flashback Neon\033[0m" << endl
-                 << "\033[1;38;5;205m2 - Festa Tropical / Luau - Noite Havaiana\033[0m" << endl
-                 << "\033[1;38;5;205m3 - Fantasia - Mundo Encantado\033[0m" << endl
-                 << "\033[1;38;5;205m4 - Festa Junina - Arraiá do Povo\033[0m" << endl
-                 << "\033[1;38;5;205m5 - Halloween - Noite do Terror\033[0m" << endl;
-
-            while (!evento_valido) {
-                cout << endl << "\033[38;5;208mDigite o numero do evento escolhido: \033[0m";
-                cin >> escolha_evento;
-                cout << endl;
-                cin.ignore();
-
-                if (escolha_evento == 1) {
-                    dados[indice_encontrado].tipo_evento = "Anos 80 - Flashback Neon";
-                    evento_valido = true;
-                } else if (escolha_evento == 2) {
-                    dados[indice_encontrado].tipo_evento = "Festa Tropical / Luau - Noite Havaiana";
-                    evento_valido = true;
-                } else if (escolha_evento == 3) {
-                    dados[indice_encontrado].tipo_evento = "Fantasia - Mundo Encantado";
-                    evento_valido = true;
-                } else if (escolha_evento == 4) {
-                    dados[indice_encontrado].tipo_evento = "Festa Junina - Arraiá do Povo";
-                    evento_valido = true;
-                } else if (escolha_evento == 5) {
-                    dados[indice_encontrado].tipo_evento = "Halloween - Noite do Terror";
-                    evento_valido = true;
-                } else {
-                    cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
-                }
-            }
+            dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_CPF);
 
             cout << "\033[92mSEU LOGIN:\033[0m" << endl
                  << "\033[92mID:\033[0m " << dados[indice_encontrado].id_usuario << endl
