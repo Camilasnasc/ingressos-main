@@ -7,6 +7,7 @@
 #include <cstring>
 #include <algorithm>
 #include <vector>
+#include <ctime>
 #include <stdlib.h>
 
 using namespace std;
@@ -26,6 +27,13 @@ struct eventos {
              << tipo_evento << endl;
     }
 };
+
+// Retorna o ano corrente do relogio do sistema.
+int anoAtual() {
+    time_t agora = time(nullptr);
+    tm* horario_local = localtime(&agora);
+    return horario_local->tm_year + 1900;
+}
 
 // Le uma linha via cin.getline, valida que contem apenas digitos e esta
 // dentro de [minValor, maxValor], repetindo o prompt ate ser valido.
@@ -364,13 +372,14 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
     bool ano_valido = false;
 
     while (!ano_valido) {
+        int ano_max = anoAtual();
         int ano = lerInteiroValidado(
             "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
-            1900, 2025,
-            "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m\n"
+            1900, ano_max,
+            "\033[1;31mAno invalido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
         );
 
-        if (2025 - ano < 18) {
+        if (ano_max - ano < 18) {
             cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
         } else {
             novo.nascimento = ano;
@@ -483,13 +492,14 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                 bool ano_valido = false;
 
                 while (!ano_valido) {
+                    int ano_max = anoAtual();
                     int ano = lerInteiroValidado(
                         "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
-                        1900, 2025,
-                        "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m\n"
+                        1900, ano_max,
+                        "\033[1;31mAno invalido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
                     );
 
-                    if (2025 - ano < 18) {
+                    if (ano_max - ano < 18) {
                         cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
                     } else {
                         dados[indice_encontrado].nascimento = ano;
@@ -556,13 +566,14 @@ void editar_usuario_CPF(eventos dados[], int total) {
             bool ano_valido = false;
 
             while (!ano_valido) {
+                int ano_max = anoAtual();
                 int ano = lerInteiroValidado(
                     "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
-                    1900, 2025,
-                    "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m\n"
+                    1900, ano_max,
+                    "\033[1;31mAno invalido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
                 );
 
-                if (2025 - ano < 18) {
+                if (ano_max - ano < 18) {
                     cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
                 } else {
                     dados[indice_encontrado].nascimento = ano;
