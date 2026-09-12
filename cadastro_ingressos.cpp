@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <cstring>
+#include <algorithm>
 #include <stdlib.h>
 
 using namespace std;
@@ -242,30 +243,19 @@ void salvar_no_arquivo(eventos dados[], int total) {
     }
 }
 
-void insertion(eventos vetor[], int tamanho) {
-    for (int i = 1; i < tamanho; i++) {
-        eventos chave = vetor[i];
-        int j = i - 1;
-
-        while (j >= 0 and vetor[j].id_usuario > chave.id_usuario) {
-            vetor[j + 1] = vetor[j];
-            j--;
-        }
-        vetor[j + 1] = chave;
-    }
-    salvar_no_arquivo(vetor, tamanho);
-}
-
-void insertion_cpf(eventos vetor[], int tamanho) {
-    for (int i = 1; i < tamanho; i++) {
-        eventos chave = vetor[i];
-        int j = i - 1;
-
-        while (j >= 0 and vetor[j].cpf > chave.cpf) {
-            vetor[j + 1] = vetor[j];
-            j--;
-        }
-        vetor[j + 1] = chave;
+// Ordena por id_usuario (porCpf = false) ou por cpf (porCpf = true) e
+// reescreve o CSV com o resultado, como insertion/insertion_cpf faziam.
+// id_usuario e cpf sao unicos entre os registros (regra de negocio),
+// entao nunca ha empate no criterio de ordenacao.
+void ordenarESalvar(eventos vetor[], int tamanho, bool porCpf) {
+    if (porCpf) {
+        sort(vetor, vetor + tamanho, [](const eventos& a, const eventos& b) {
+            return a.cpf < b.cpf;
+        });
+    } else {
+        sort(vetor, vetor + tamanho, [](const eventos& a, const eventos& b) {
+            return a.id_usuario < b.id_usuario;
+        });
     }
     salvar_no_arquivo(vetor, tamanho);
 }
@@ -682,7 +672,7 @@ int main() {
         if (strlen(opcao) == 1 && opcao[0] >= '1' && opcao[0] <= '6') {
             if (strcmp(opcao, "1") == 0) {
                 limparTela();
-                insertion(dadosPessoas, numRegistros);
+                ordenarESalvar(dadosPessoas, numRegistros, false);
                 imprimeDados(dadosPessoas, numRegistros);
 
                 cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
@@ -722,7 +712,7 @@ int main() {
                     
                     if (strlen(opcao_busca) == 1 && (opcao_busca[0] == '1' || opcao_busca[0] == '2')) {
                         if (strcmp(opcao_busca, "1") == 0) {
-                            insertion(dadosPessoas, numRegistros);
+                            ordenarESalvar(dadosPessoas, numRegistros, false);
                             editar_dados_Id(dadosPessoas, numRegistros);    
 
                             cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
@@ -733,7 +723,7 @@ int main() {
                             busca_valida = true;
                         } 
                         else {
-                            insertion_cpf(dadosPessoas, numRegistros);
+                            ordenarESalvar(dadosPessoas, numRegistros, true);
                             editar_usuario_CPF(dadosPessoas, numRegistros);
 
                             cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
@@ -760,14 +750,14 @@ int main() {
                 cin.ignore();
             } 
             else if (strcmp(opcao, "6") == 0) {
-                insertion(dadosPessoas, numRegistros);
+                ordenarESalvar(dadosPessoas, numRegistros, false);
                 opcao_valida = false;
                 resposta = 'n';
             }
         } 
     } while (opcao_valida && (resposta == 's' || resposta == 'S'));
     
-    insertion(dadosPessoas, numRegistros);
+    ordenarESalvar(dadosPessoas, numRegistros, false);
 
     cout << "\033[1;32mObrigado por usar nosso sistema! Ate logo.\033[0m" << endl;
 
