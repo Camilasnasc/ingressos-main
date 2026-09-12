@@ -270,16 +270,37 @@ void insertion_cpf(eventos vetor[], int tamanho) {
     salvar_no_arquivo(vetor, tamanho);
 }
 
+// Imprime um registro seguido da linha separadora, no formato usado
+// por imprimeDados e qtd_imprimir.
+void imprimeRegistro(const eventos& registro) {
+    cout << registro.id_usuario << ", "
+         << registro.nome << ", "
+         << registro.cpf << ", "
+         << registro.nascimento << ", "
+         << registro.tipo_evento
+         << endl;
+    cout << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
+}
+
+// Imprime o resumo "LOGIN" de um registro apos cadastro/edicao.
+// cabecalho e recebido pronto (com cor) porque o texto varia entre
+// chamadores: "SEU LOGIN:" em cadastro_novo_usuario/editar_usuario_CPF
+// e apenas "LOGIN:" em editar_dados_Id - inconsistencia pre-existente
+// preservada aqui.
+void imprimeResumoLogin(const eventos& registro, const string& cabecalho) {
+    cout << cabecalho << endl
+         << "\033[92mID:\033[0m " << registro.id_usuario << endl
+         << "\033[92mNOME:\033[0m " << registro.nome << endl
+         << "\033[92mCPF:\033[0m " << registro.cpf << endl
+         << "\033[92mANO DE NASCIMENTO: \033[0m" << registro.nascimento << endl
+         << "\033[92mEVENTO ESCOLHIDO:\033[0m " << registro.tipo_evento << endl;
+    cout << endl;
+}
+
 void imprimeDados(eventos dados[], int tam) {
     cout << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
     for (int i = 0; i < tam; i++) {
-        cout << dados[i].id_usuario << ", "
-             << dados[i].nome << ", "
-             << dados[i].cpf << ", "
-             << dados[i].nascimento << ", "
-             << dados[i].tipo_evento
-             << endl;
-        cout << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
+        imprimeRegistro(dados[i]);
     }
 }
 
@@ -311,13 +332,7 @@ void qtd_imprimir(eventos dados[], int numRegistros) {
 
     cout << endl << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
     for (int i = min - 1; i < max; i++) {
-        cout << dados[i].id_usuario << ", "
-             << dados[i].nome << ", "
-             << dados[i].cpf << ", "
-             << dados[i].nascimento << ", "
-             << dados[i].tipo_evento
-             << endl;
-        cout << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
+        imprimeRegistro(dados[i]);
     }
 }
 
@@ -374,14 +389,8 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
 
     novo.tipo_evento = escolherEvento(EstiloMenuEvento::CADASTRO);
 
-    cout << "\033[92mSEU LOGIN:\033[0m" << endl
-         << "\033[92mID:\033[0m " << novo.id_usuario << endl
-         << "\033[92mNOME:\033[0m " << novo.nome << endl
-         << "\033[92mCPF:\033[0m " << novo.cpf << endl
-         << "\033[92mANO DE NASCIMENTO: \033[0m" << novo.nascimento << endl
-         << "\033[92mEVENTO ESCOLHIDO:\033[0m " << novo.tipo_evento << endl;
-    cout << endl;
-    
+    imprimeResumoLogin(novo, "\033[92mSEU LOGIN:\033[0m");
+
     vetor[numRegistro] = novo;
     salvar_no_arquivo(vetor, numRegistro + 1);
     cout << "\033[1;32mCadastrado com Sucesso!\033[0m" << endl;
@@ -500,13 +509,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                    
                 dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_ID);
 
-                cout << "\033[92mLOGIN:\033[0m" << endl
-                     << "\033[92mID:\033[0m " << dados[indice_encontrado].id_usuario << endl
-                     << "\033[92mNOME:\033[0m " << dados[indice_encontrado].nome << endl
-                     << "\033[92mCPF:\033[0m " << dados[indice_encontrado].cpf << endl
-                     << "\033[92mANO DE NASCIMENTO: \033[0m" << dados[indice_encontrado].nascimento << endl
-                     << "\033[92mEVENTO ESCOLHIDO:\033[0m " << dados[indice_encontrado].tipo_evento << endl;
-                cout << endl;
+                imprimeResumoLogin(dados[indice_encontrado], "\033[92mLOGIN:\033[0m");
 
                 salvar_no_arquivo(dados, numRegistro);
                 cout << "\033[1;32mDados atualizados com sucesso!\033[0m" << endl;
@@ -578,13 +581,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
 
             dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_CPF);
 
-            cout << "\033[92mSEU LOGIN:\033[0m" << endl
-                 << "\033[92mID:\033[0m " << dados[indice_encontrado].id_usuario << endl
-                 << "\033[92mNOME:\033[0m " << dados[indice_encontrado].nome << endl
-                 << "\033[92mCPF:\033[0m " << dados[indice_encontrado].cpf << endl
-                 << "\033[92mANO DE NASCIMENTO: \033[0m" << dados[indice_encontrado].nascimento << endl
-                 << "\033[92mEVENTO ESCOLHIDO:\033[0m " << dados[indice_encontrado].tipo_evento << endl;
-            cout << endl;
+            imprimeResumoLogin(dados[indice_encontrado], "\033[92mSEU LOGIN:\033[0m");
 
             // Confirmação antes de salvar
             salvar_no_arquivo(dados, total);
