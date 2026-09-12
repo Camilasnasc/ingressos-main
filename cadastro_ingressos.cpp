@@ -594,24 +594,6 @@ void editar_usuario_CPF(eventos dados[], int total) {
     }
 }
 
-void binario(eventos dadosPessoas[], int numRegistro) {
-    ofstream arquivo("projeto_binario.bin", ios::binary);
-    ifstream arquivoLido("projeto_binario.bin", ios::binary);
-    
-    arquivo.write((const char*)(dadosPessoas), numRegistro * sizeof(eventos));
-    arquivoLido.read((char*)(dadosPessoas), sizeof(eventos) * numRegistro);
-    
-    for (int i = 0; i < numRegistro; i++) {
-        cout << dadosPessoas[i].id_usuario << ", "
-             << dadosPessoas[i].nome << ", "    
-             << dadosPessoas[i].cpf << ", "
-             << dadosPessoas[i].nascimento << ", "
-             << dadosPessoas[i].tipo_evento << "." << endl;        
-    }
-    arquivo.close();
-    arquivoLido.close();
-}
-
 void limparTela() {
 #ifdef _WIN32
     system("cls");
