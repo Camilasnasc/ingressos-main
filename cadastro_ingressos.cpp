@@ -602,7 +602,11 @@ void binario(eventos dadosPessoas[], int numRegistro) {
 }
 
 void limparTela() {
-    system("cls || clear"); // Funciona no Windows (cls) e Linux/macOS (clear)
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
 }
 
 int main() {
