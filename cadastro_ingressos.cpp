@@ -476,7 +476,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
         while(!confirma) {
             char escolha[2];
 
-            cout << "\033[1;31mAo editar os dados, os mesmos ficarao salvos ao termino dessa aplicacao\033[0m" << endl
+            cout << "\033[1;31mAo confirmar, as alterações serão salvas imediatamente no arquivo\033[0m" << endl
                  << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou número para cancelar a operação \033[0m";
              
             cin.ignore();
@@ -555,7 +555,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
         return;
     } else {
         char resposta;
-        cout << "\033[1;31mAo editar os dados, os mesmos ficarao salvos ao termino dessa aplicacao\033[0m" << endl
+        cout << "\033[1;31mAo confirmar, as alterações serão salvas imediatamente no arquivo\033[0m" << endl
              << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou número para cancelar a operação \033[0m";
         cin >> resposta;
         cin.ignore();
