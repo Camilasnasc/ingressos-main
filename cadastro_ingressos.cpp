@@ -434,7 +434,7 @@ void excluir_usuario(eventos dados[], int& total) {
             salvar_no_arquivo(dados, total);
             cout << "\033[1;32mConta excluída com sucesso.\033[0m" << endl;
         } else {
-            cout << "\033[1;32mOperação cancelada! Agradecemos por continuar conosco.:)\033[0m" << endl;
+            cout << "\033[1;32mOperação cancelada! Agradecemos por continuar conosco. :)\033[0m" << endl;
         }
     } else {
         cout << "\033[1;31mCPF não encontrado.\033[0m" << endl;
@@ -513,7 +513,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                 confirma = true;
             } else {
                 confirma = true;
-                cout << "\033[1;32mOperação cancelada com sucesso!.\033[0m" << endl;
+                cout << "\033[1;32mOperação cancelada com sucesso!\033[0m" << endl;
             }
         }
     }
@@ -585,7 +585,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
             salvar_no_arquivo(dados, total);
             cout << "\033[1;32mDados atualizados com sucesso!\033[0m" << endl;
         } else {
-            cout << "\033[1;32mOperação cancelada com sucesso!.\033[0m" << endl;
+            cout << "\033[1;32mOperação cancelada com sucesso!\033[0m" << endl;
         }
     }
 }
@@ -685,8 +685,8 @@ int main() {
             else if (strcmp(opcao, "4") == 0) {
                 limparTela();
                 cout << "\033[38;5;208mDigite sua opção de busca: \033[0m" << endl
-                     << "\033[38;5;208m|1 - para fazer a buscar por ID \033[0m" << endl
-                     << "\033[38;5;208m|2 - para fazer a buscar por CPF \033[0m" << endl;
+                     << "\033[38;5;208m|1 - para buscar por ID \033[0m" << endl
+                     << "\033[38;5;208m|2 - para buscar por CPF \033[0m" << endl;
                 
                 bool busca_valida = false;
                 
