@@ -25,6 +25,44 @@ struct eventos {
     }
 };
 
+// Le uma linha via cin.getline, valida que contem apenas digitos e esta
+// dentro de [minValor, maxValor], repetindo o prompt ate ser valido.
+int lerInteiroValidado(const string& prompt, int minValor, int maxValor, const string& mensagemForaDaFaixa) {
+    int valor = 0;
+    bool valido = false;
+
+    while (!valido) {
+        cout << prompt;
+        char entrada[20];
+        cin.getline(entrada, 20);
+
+        bool apenas_numeros = true;
+        int tamanho = strlen(entrada);
+        for (int i = 0; i < tamanho && apenas_numeros; i++) {
+            if (entrada[i] < '0' || entrada[i] > '9') {
+                apenas_numeros = false;
+            }
+        }
+
+        if (!apenas_numeros || tamanho == 0) {
+            cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+        } else {
+            valor = 0;
+            for (int i = 0; i < tamanho; i++) {
+                valor = valor * 10 + (entrada[i] - '0');
+            }
+
+            if (valor < minValor || valor > maxValor) {
+                cout << mensagemForaDaFaixa;
+            } else {
+                valido = true;
+            }
+        }
+    }
+
+    return valor;
+}
+
 void salvar_no_arquivo(eventos dados[], int total) {
     ofstream arquivo("arquivo_csv_projeto.csv");
     if (!arquivo) {
@@ -85,77 +123,31 @@ void imprimeDados(eventos dados[], int tam) {
 }
 
 void qtd_imprimir(eventos dados[], int numRegistros) {
-    char min_char[20];
-    char max_char[20];
     int min = 0;
     int max = 0;
-    
+
     cout << "\033[38;5;208mNumero minimo de posicoes: \033[0m" << "1" << endl;
     cout << "\033[38;5;208mNumero maximo de posicoes: \033[0m" << numRegistros << endl;
-    
+
     cin.ignore();
-    
+
+    string mensagemFaixaPosicao = "\033[1;31mPosicao deve estar entre 1 e " + to_string(numRegistros) + ". Tente novamente.\033[0m\n";
+
     // verifica se min é um número
-    bool min_valido = false;
-    while (!min_valido) {
-        cout << "\033[38;5;208mDeseja que a impressao comece da posicao: \033[0m";
-        cin.getline(min_char, 20);
-        
-        bool apenas_numeros = true;
-        int tamanho = strlen(min_char);
-        for (int i = 0; i < tamanho && apenas_numeros; i++) {
-            if (min_char[i] < '0' || min_char[i] > '9') {
-                apenas_numeros = false;
-            }
-        }
-        
-        if (!apenas_numeros || tamanho == 0) {
-            cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
-        } else {
-            min = 0;
-            for (int i = 0; i < tamanho; i++) {
-                min = min * 10 + (min_char[i] - '0');
-            }
-            
-            if (min < 1 || min > numRegistros) {
-                cout << "\033[1;31mPosicao deve estar entre 1 e " << numRegistros << ". Tente novamente.\033[0m" << endl;
-            } else {
-                min_valido = true;
-            }
-        }
-    }
+    min = lerInteiroValidado("\033[38;5;208mDeseja que a impressao comece da posicao: \033[0m", 1, numRegistros, mensagemFaixaPosicao);
+
     //verifica se max é um número
     bool max_valido = false;
     while (!max_valido) {
-        cout << "\033[38;5;208mE termine na posicao: \033[0m";
-        cin.getline(max_char, 20);
-        
-        bool apenas_numeros = true;
-        int tamanho = strlen(max_char);
-        for (int i = 0; i < tamanho && apenas_numeros; i++) {
-            if (max_char[i] < '0' || max_char[i] > '9') {
-                apenas_numeros = false;
-            }
-        }
-        
-        if (!apenas_numeros || tamanho == 0) {
-            cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+        max = lerInteiroValidado("\033[38;5;208mE termine na posicao: \033[0m", 1, numRegistros, mensagemFaixaPosicao);
+
+        if (max < min) {
+            cout << "\033[1;31mPosicao final deve ser maior ou igual a posicao inicial " << min << ". Tente novamente.\033[0m" << endl;
         } else {
-            max = 0;
-            for (int i = 0; i < tamanho; i++) {
-                max = max * 10 + (max_char[i] - '0');
-            }
-            
-            if (max < 1 || max > numRegistros) {
-                cout << "\033[1;31mPosicao deve estar entre 1 e " << numRegistros << ". Tente novamente.\033[0m" << endl;
-            } else if (max < min) {
-                cout << "\033[1;31mPosicao final deve ser maior ou igual a posicao inicial " << min << ". Tente novamente.\033[0m" << endl;
-            } else {
-                max_valido = true;
-            }
+            max_valido = true;
         }
     }
-     
+
     cout << endl << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
     for (int i = min - 1; i < max; i++) {
         cout << dados[i].id_usuario << ", "
@@ -170,52 +162,33 @@ void qtd_imprimir(eventos dados[], int numRegistros) {
 
 void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
     bool id_valido = false;
-    char entrada[20];
-    
+
     cin.ignore();
-    
+
     while (!id_valido) {
-        cout << "\033[38;5;208mCrie seu id pessoal (4 digitos no maximo): \033[0m" << endl;
-        cin.getline(entrada, 20);
-        
-        bool apenas_numeros = true;
-        int tamanho = strlen(entrada);
-        for (int i = 0; i < tamanho and apenas_numeros; i++) {
-            if (entrada[i] < '0' or entrada[i] > '9') {
-                apenas_numeros = false;
+        int id = lerInteiroValidado(
+            "\033[38;5;208mCrie seu id pessoal (4 digitos no maximo): \033[0m\n",
+            1, 9999,
+            "\033[1;31mId deve ter entre 1 e 9999. Tente novamente.\033[0m\n"
+        );
+
+        bool id_existente = false;
+        int i = 0;
+        while (i < numRegistro and !id_existente) {
+            if (id == vetor[i].id_usuario) {
+                id_existente = true;
             }
+            i++;
         }
-        
-        if (!apenas_numeros or tamanho == 0) {
-            cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+
+        if (id_existente) {
+            cout << "\033[1;31mId já existente. Por favor, tente outro.\033[0m" << endl;
         } else {
-            int id = 0;
-            for (int i = 0; i < tamanho; i++) {
-                id = id * 10 + (entrada[i] - '0');
-            }
-            
-            if (id <= 0 or id > 9999) {
-                cout << "\033[1;31mId deve ter entre 1 e 9999. Tente novamente.\033[0m" << endl;
-            } else {
-                bool id_existente = false;
-                int i = 0;
-                while (i < numRegistro and !id_existente) {
-                    if (id == vetor[i].id_usuario) {
-                        id_existente = true;
-                    }
-                    i++;
-                }
-                
-                if (id_existente) {
-                    cout << "\033[1;31mId já existente. Por favor, tente outro.\033[0m" << endl;
-                } else {
-                    novo.id_usuario = id;
-                    id_valido = true;
-                }
-            }
+            novo.id_usuario = id;
+            id_valido = true;
         }
     }
-    
+
     bool nome_valido;
     do {
         cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
@@ -285,37 +258,20 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
         }
     }
 
-    char escrito[20];
     bool ano_valido = false;
-    
+
     while (!ano_valido) {
-        cout << "\033[38;5;208mDigite o ano de nascimento: \033[0m" << endl;
-        cin.getline(escrito, 20);
+        int ano = lerInteiroValidado(
+            "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
+            1900, 2025,
+            "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m\n"
+        );
 
-        bool apenas_numeros = true;
-        int tamanho = strlen(escrito);
-        for (int i = 0; i < tamanho && apenas_numeros; i++) {
-            if (escrito[i] < '0' || escrito[i] > '9') {
-                apenas_numeros = false;
-            }
-        }
-
-        if (!apenas_numeros || tamanho == 0) {
-            cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+        if (2025 - ano < 18) {
+            cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
         } else {
-            int ano = 0;
-            for (int i = 0; i < tamanho; i++) {
-                ano = ano * 10 + (escrito[i] - '0');
-            }
-
-            if (ano < 1900 || ano > 2025) {
-                cout << "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m" << endl;
-            } else if (2025 - ano < 18) {
-                cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
-            } else {
-                novo.nascimento = ano;
-                ano_valido = true;
-            }
+            novo.nascimento = ano;
+            ano_valido = true;
         }
     }
 
@@ -515,37 +471,20 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                     }
                 }
                     
-                char escrito[20];
                 bool ano_valido = false;
-                
+
                 while (!ano_valido) {
-                    cout << "\033[38;5;208mDigite o ano de nascimento: \033[0m" << endl;
-                    cin.getline(escrito, 20);
+                    int ano = lerInteiroValidado(
+                        "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
+                        1900, 2025,
+                        "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m\n"
+                    );
 
-                    bool apenas_numeros = true;
-                    int tamanho = strlen(escrito);
-                    for (int i = 0; i < tamanho && apenas_numeros; i++) {
-                        if (escrito[i] < '0' || escrito[i] > '9') {
-                            apenas_numeros = false;
-                        }
-                    }
-
-                    if (!apenas_numeros || tamanho == 0) {
-                        cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+                    if (2025 - ano < 18) {
+                        cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
                     } else {
-                        int ano = 0;
-                        for (int i = 0; i < tamanho; i++) {
-                            ano = ano * 10 + (escrito[i] - '0');
-                        }
-
-                        if (ano < 1900 || ano > 2025) {
-                            cout << "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m" << endl;
-                        } else if (2025 - ano < 18) {
-                            cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
-                        } else {
-                            dados[indice_encontrado].nascimento = ano;
-                            ano_valido = true;
-                        }
+                        dados[indice_encontrado].nascimento = ano;
+                        ano_valido = true;
                     }
                 }
                 cin.ignore();
@@ -675,37 +614,20 @@ void editar_usuario_CPF(eventos dados[], int total) {
                 }
             } while(dados[indice_encontrado].nome.size() == 0 || !nome_valido);
 
-            char escrito[20];
             bool ano_valido = false;
-            
+
             while (!ano_valido) {
-                cout << "\033[38;5;208mDigite o ano de nascimento: \033[0m" << endl;
-                cin.getline(escrito, 20);
+                int ano = lerInteiroValidado(
+                    "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
+                    1900, 2025,
+                    "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m\n"
+                );
 
-                bool apenas_numeros = true;
-                int tamanho = strlen(escrito);
-                for (int i = 0; i < tamanho && apenas_numeros; i++) {
-                    if (escrito[i] < '0' || escrito[i] > '9') {
-                        apenas_numeros = false;
-                    }
-                }
-
-                if (!apenas_numeros || tamanho == 0) {
-                    cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+                if (2025 - ano < 18) {
+                    cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
                 } else {
-                    int ano = 0;
-                    for (int i = 0; i < tamanho; i++) {
-                        ano = ano * 10 + (escrito[i] - '0');
-                    }
-
-                    if (ano < 1900 || ano > 2025) {
-                        cout << "\033[1;31mAno invalido! Digite um ano entre 1900 e 2025.\033[0m" << endl;
-                    } else if (2025 - ano < 18) {
-                        cout << "\033[1;31mProibido menores de 18 anos!\033[0m" << endl;
-                    } else {
-                        dados[indice_encontrado].nascimento = ano;
-                        ano_valido = true;
-                    }
+                    dados[indice_encontrado].nascimento = ano;
+                    ano_valido = true;
                 }
             }
 
