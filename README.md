@@ -16,9 +16,9 @@ Este projeto foi desenvolvido em equipe como um desafio acadêmico para a discip
 ### 🛠️ Tecnologias e Conceitos Aplicados
 
 - **Linguagem:** C++
-- **Algoritmos:** Insertion Sort, Busca Binária
-- **Estruturas de Dados:** Structs, Arrays Dinâmicos
-- **Outros:** Manipulação de Arquivos (fstream), Validação de Dados, Gerenciamento de Memória.
+- **Algoritmos:** std::sort (com comparators), Busca Binária
+- **Estruturas de Dados:** Structs, std::vector, std::string
+- **Outros:** Manipulação de Arquivos (fstream), Validação de Dados.
 
 ---
 
