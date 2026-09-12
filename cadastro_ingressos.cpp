@@ -11,10 +11,10 @@ using namespace std;
 
 struct eventos {
     int id_usuario;
-    char nome[162];
-    char cpf[20];
+    string nome;
+    string cpf;
     short nascimento;
-    char tipo_evento[100];
+    string tipo_evento;
 
     void imprime() {
         cout << id_usuario << endl
@@ -62,7 +62,7 @@ void insertion_cpf(eventos vetor[], int tamanho) {
         eventos chave = vetor[i];
         int j = i - 1;
 
-        while (j >= 0 and strcmp(vetor[j].cpf, chave.cpf) > 0) {
+        while (j >= 0 and vetor[j].cpf > chave.cpf) {
             vetor[j + 1] = vetor[j];
             j--;
         }
@@ -219,11 +219,13 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
     bool nome_valido;
     do {
         cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
-        cin.getline(novo.nome, 162);
-        
+        char buffer_nome[162];
+        cin.getline(buffer_nome, 162);
+        novo.nome = buffer_nome;
+
         nome_valido = true;
-        int tamanho = strlen(novo.nome);
-        
+        int tamanho = novo.nome.size();
+
         // Verifica se está vazio
         if(tamanho == 0) {
             cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
@@ -238,19 +240,21 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
                 }
                 i++;
             }
-            
+
             if(!nome_valido) {
                 cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
             }
         }
-    } while(strlen(novo.nome) == 0 || !nome_valido);
-    
+    } while(novo.nome.size() == 0 || !nome_valido);
+
     cout << "\033[38;5;208mSeu CPF, sem .(ponto) e -(traco): \033[0m" << endl;
     bool cpf_valido = false;
     while (!cpf_valido) {
-        cin.getline(novo.cpf, 20);
+        char buffer_cpf[20];
+        cin.getline(buffer_cpf, 20);
+        novo.cpf = buffer_cpf;
 
-        int tamanho = strlen(novo.cpf);
+        int tamanho = novo.cpf.size();
         int qtd_digitos = 0;
         bool apenas_numeros = true;
 
@@ -265,7 +269,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
             bool cpf_existente = false;
             int i = 0;
             while (i < numRegistro and !cpf_existente) {
-                if (strcmp(novo.cpf, vetor[i].cpf) == 0) {
+                if (novo.cpf == vetor[i].cpf) {
                     cpf_existente = true;
                 }
                 i++;
@@ -332,19 +336,19 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
         cin.ignore();
 
         if (strcmp(escolha_evento, "1") == 0) {
-            strcpy(novo.tipo_evento, "Anos 80 - Flashback Neon");
+            novo.tipo_evento = "Anos 80 - Flashback Neon";
             evento_valido = true;
         } else if (strcmp(escolha_evento, "2") == 0) {
-            strcpy(novo.tipo_evento, "Festa Tropical / Luau - Noite Havaiana");
+            novo.tipo_evento = "Festa Tropical / Luau - Noite Havaiana";
             evento_valido = true;
         } else if (strcmp(escolha_evento, "3") == 0) {
-            strcpy(novo.tipo_evento, "Fantasia - Mundo Encantado");
+            novo.tipo_evento = "Fantasia - Mundo Encantado";
             evento_valido = true;
         } else if (strcmp(escolha_evento, "4") == 0) {
-            strcpy(novo.tipo_evento, "Festa Junina - Arraia do Povo");
+            novo.tipo_evento = "Festa Junina - Arraia do Povo";
             evento_valido = true;
         } else if (strcmp(escolha_evento, "5") == 0) {
-            strcpy(novo.tipo_evento, "Halloween - Noite do Terror");
+            novo.tipo_evento = "Halloween - Noite do Terror";
             evento_valido = true;
         } else {
             cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
@@ -376,7 +380,7 @@ void excluir_usuario(eventos dados[], int& total) {
     bool confirmado = false;
     
     for (int i = 0; i < total && !encontrado; i++) {
-        if (strcmp(dados[i].cpf, cpf_buscado) == 0) {
+        if (dados[i].cpf == cpf_buscado) {
             encontrado = true;
             indice = i;
         }
@@ -457,11 +461,13 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                 bool nome_valido;
                 do {
                     cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
-                    cin.getline(dados[indice_encontrado].nome, 162);
-                    
+                    char buffer_nome[162];
+                    cin.getline(buffer_nome, 162);
+                    dados[indice_encontrado].nome = buffer_nome;
+
                     nome_valido = true;
-                    int tamanho = strlen(dados[indice_encontrado].nome);
-                    
+                    int tamanho = dados[indice_encontrado].nome.size();
+
                     // Verifica se está vazio
                     if(tamanho == 0) {
                         cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
@@ -476,19 +482,21 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                             }
                             i++;
                         }
-                    
+
                         if(!nome_valido) {
                         cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
                         }
                     }
-                } while(strlen(dados[indice_encontrado].nome) == 0 || !nome_valido);
-                
+                } while(dados[indice_encontrado].nome.size() == 0 || !nome_valido);
+
                 cout << "\033[38;5;208mCPF: \033[0m" << endl;
                 bool cpf_valido = false;
                 while (!cpf_valido) {
-                    cin.getline(dados[indice_encontrado].cpf, 20);
+                    char buffer_cpf[20];
+                    cin.getline(buffer_cpf, 20);
+                    dados[indice_encontrado].cpf = buffer_cpf;
 
-                    int tamanho = strlen(dados[indice_encontrado].cpf);
+                    int tamanho = dados[indice_encontrado].cpf.size();
                     int qtd_digitos = 0;
                     bool apenas_numeros = true;
 
@@ -557,19 +565,19 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                     cin.ignore();
 
                     if (strcmp(escolha_evento, "1") == 0) {
-                        strcpy(dados[indice_encontrado].tipo_evento, "Anos 80 - Flashback Neon");
+                        dados[indice_encontrado].tipo_evento = "Anos 80 - Flashback Neon";
                         evento_valido = true;
                     } else if (strcmp(escolha_evento, "2") == 0) {
-                        strcpy(dados[indice_encontrado].tipo_evento, "Festa Tropical / Luau - Noite Havaiana");
+                        dados[indice_encontrado].tipo_evento = "Festa Tropical / Luau - Noite Havaiana";
                         evento_valido = true;
                     } else if (strcmp(escolha_evento, "3") == 0) {
-                        strcpy(dados[indice_encontrado].tipo_evento, "Fantasia - Mundo Encantado");
+                        dados[indice_encontrado].tipo_evento = "Fantasia - Mundo Encantado";
                         evento_valido = true;
                     } else if (strcmp(escolha_evento, "4") == 0) {
-                        strcpy(dados[indice_encontrado].tipo_evento, "Festa Junina - Arraia do Povo");
+                        dados[indice_encontrado].tipo_evento = "Festa Junina - Arraia do Povo";
                         evento_valido = true;
                     } else if (strcmp(escolha_evento, "5") == 0) {
-                        strcpy(dados[indice_encontrado].tipo_evento, "Halloween - Noite do Terror");
+                        dados[indice_encontrado].tipo_evento = "Halloween - Noite do Terror";
                         evento_valido = true;
                     } else {
                         cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
@@ -611,7 +619,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
     bool encontrado = false;
     while (pos_inicial <= pos_final && continuar_busca) {
         int meio = (pos_inicial + pos_final) / 2;
-        int comparacao = strcmp(cpf_buscado, dados[meio].cpf);
+        int comparacao = strcmp(cpf_buscado, dados[meio].cpf.c_str());
 
         if (comparacao == 0) {
             indice_encontrado = meio;
@@ -639,11 +647,13 @@ void editar_usuario_CPF(eventos dados[], int total) {
         if (resposta == 's' || resposta == 'S') {
             do {
                 cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
-                cin.getline(dados[indice_encontrado].nome, 162);
-                
+                char buffer_nome[162];
+                cin.getline(buffer_nome, 162);
+                dados[indice_encontrado].nome = buffer_nome;
+
                 nome_valido = true;
-                int tamanho = strlen(dados[indice_encontrado].nome);
-                
+                int tamanho = dados[indice_encontrado].nome.size();
+
                 // Verifica se está vazio
                 if(tamanho == 0) {
                     cout << "\033[1;31mO nome precisa ser informado!\033[0m" << endl;
@@ -658,12 +668,12 @@ void editar_usuario_CPF(eventos dados[], int total) {
                         }
                         i++;
                     }
-                    
+
                     if(!nome_valido) {
                         cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
                     }
                 }
-            } while(strlen(dados[indice_encontrado].nome) == 0 || !nome_valido);
+            } while(dados[indice_encontrado].nome.size() == 0 || !nome_valido);
 
             char escrito[20];
             bool ano_valido = false;
@@ -714,19 +724,19 @@ void editar_usuario_CPF(eventos dados[], int total) {
                 cin.ignore();
 
                 if (escolha_evento == 1) {
-                    strcpy(dados[indice_encontrado].tipo_evento, "Anos 80 - Flashback Neon");
+                    dados[indice_encontrado].tipo_evento = "Anos 80 - Flashback Neon";
                     evento_valido = true;
                 } else if (escolha_evento == 2) {
-                    strcpy(dados[indice_encontrado].tipo_evento, "Festa Tropical / Luau - Noite Havaiana");
+                    dados[indice_encontrado].tipo_evento = "Festa Tropical / Luau - Noite Havaiana";
                     evento_valido = true;
                 } else if (escolha_evento == 3) {
-                    strcpy(dados[indice_encontrado].tipo_evento, "Fantasia - Mundo Encantado");
+                    dados[indice_encontrado].tipo_evento = "Fantasia - Mundo Encantado";
                     evento_valido = true;
                 } else if (escolha_evento == 4) {
-                    strcpy(dados[indice_encontrado].tipo_evento, "Festa Junina - Arraiá do Povo");
+                    dados[indice_encontrado].tipo_evento = "Festa Junina - Arraiá do Povo";
                     evento_valido = true;
                 } else if (escolha_evento == 5) {
-                    strcpy(dados[indice_encontrado].tipo_evento, "Halloween - Noite do Terror");
+                    dados[indice_encontrado].tipo_evento = "Halloween - Noite do Terror";
                     evento_valido = true;
                 } else {
                     cout << "\033[1;31mEvento inexistente! Por favor, escolha um dos eventos listados acima.\033[0m" << endl;
@@ -790,11 +800,11 @@ int main() {
 
         while (arquivo_csv >> pessoa.id_usuario) {
             arquivo_csv >> lixo;
-            arquivo_csv.getline(pessoa.nome, 162, ',');
-            arquivo_csv.getline(pessoa.cpf, 20, ',');
+            getline(arquivo_csv, pessoa.nome, ',');
+            getline(arquivo_csv, pessoa.cpf, ',');
             arquivo_csv >> pessoa.nascimento;
             arquivo_csv >> lixo;
-            arquivo_csv.getline(pessoa.tipo_evento, 100);
+            getline(arquivo_csv, pessoa.tipo_evento);
 
             dadosPessoas[totalLidos] = pessoa;
             totalLidos++;
