@@ -6,6 +6,7 @@
 #include <string>
 #include <cstring>
 #include <algorithm>
+#include <vector>
 #include <stdlib.h>
 
 using namespace std;
@@ -606,7 +607,7 @@ void limparTela() {
 
 int main() {
     eventos pessoa;
-    eventos* dadosPessoas;
+    vector<eventos> dadosPessoas;
     string linha;
     char lixo;
     int numRegistros = 0;
@@ -616,9 +617,6 @@ int main() {
         cout << "\033[1;31mArquivo CSV nao esta aberto!\033[0m" << endl;
     } else {
         getline(arquivo_csv, linha);
-        int totalLidos = 0;
-        int tamanhoIndiceAtual = 10;
-        dadosPessoas = new eventos[tamanhoIndiceAtual];
 
         while (arquivo_csv >> pessoa.id_usuario) {
             arquivo_csv >> lixo;
@@ -628,20 +626,9 @@ int main() {
             arquivo_csv >> lixo;
             getline(arquivo_csv, pessoa.tipo_evento);
 
-            dadosPessoas[totalLidos] = pessoa;
-            totalLidos++;
-
-            if (totalLidos >= tamanhoIndiceAtual) {
-                tamanhoIndiceAtual += 10;
-                eventos* novo_vetor = new eventos[tamanhoIndiceAtual];
-                for (int i = 0; i < totalLidos; i++) {
-                    novo_vetor[i] = dadosPessoas[i];
-                }
-                delete[] dadosPessoas;
-                dadosPessoas = novo_vetor;
-            }
+            dadosPessoas.push_back(pessoa);
         }
-        numRegistros = totalLidos;
+        numRegistros = dadosPessoas.size();
     }
 
     char opcao[2];
@@ -672,8 +659,8 @@ int main() {
         if (strlen(opcao) == 1 && opcao[0] >= '1' && opcao[0] <= '6') {
             if (strcmp(opcao, "1") == 0) {
                 limparTela();
-                ordenarESalvar(dadosPessoas, numRegistros, false);
-                imprimeDados(dadosPessoas, numRegistros);
+                ordenarESalvar(dadosPessoas.data(), numRegistros, false);
+                imprimeDados(dadosPessoas.data(), numRegistros);
 
                 cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
                      << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;				
@@ -682,7 +669,10 @@ int main() {
             } 
             else if (strcmp(opcao, "2") == 0) {
                 limparTela();
-                cadastro_novo_usuario(pessoa, dadosPessoas, numRegistros);
+                if ((int)dadosPessoas.size() <= numRegistros) {
+                    dadosPessoas.resize(numRegistros + 1);
+                }
+                cadastro_novo_usuario(pessoa, dadosPessoas.data(), numRegistros);
                 numRegistros++;
 
                 cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
@@ -692,7 +682,7 @@ int main() {
             } 
             else if (strcmp(opcao, "3") == 0) {
                 limparTela();
-                excluir_usuario(dadosPessoas, numRegistros);
+                excluir_usuario(dadosPessoas.data(), numRegistros);
 
                 cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
                      << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
@@ -712,8 +702,8 @@ int main() {
                     
                     if (strlen(opcao_busca) == 1 && (opcao_busca[0] == '1' || opcao_busca[0] == '2')) {
                         if (strcmp(opcao_busca, "1") == 0) {
-                            ordenarESalvar(dadosPessoas, numRegistros, false);
-                            editar_dados_Id(dadosPessoas, numRegistros);    
+                            ordenarESalvar(dadosPessoas.data(), numRegistros, false);
+                            editar_dados_Id(dadosPessoas.data(), numRegistros);    
 
                             cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
                                  << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
@@ -723,8 +713,8 @@ int main() {
                             busca_valida = true;
                         } 
                         else {
-                            ordenarESalvar(dadosPessoas, numRegistros, true);
-                            editar_usuario_CPF(dadosPessoas, numRegistros);
+                            ordenarESalvar(dadosPessoas.data(), numRegistros, true);
+                            editar_usuario_CPF(dadosPessoas.data(), numRegistros);
 
                             cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
                                  << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
@@ -742,7 +732,7 @@ int main() {
             }
             else if (strcmp(opcao, "5") == 0) {
                 limparTela();
-                qtd_imprimir(dadosPessoas, numRegistros);
+                qtd_imprimir(dadosPessoas.data(), numRegistros);
                 cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
                      << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
 
@@ -750,17 +740,16 @@ int main() {
                 cin.ignore();
             } 
             else if (strcmp(opcao, "6") == 0) {
-                ordenarESalvar(dadosPessoas, numRegistros, false);
+                ordenarESalvar(dadosPessoas.data(), numRegistros, false);
                 opcao_valida = false;
                 resposta = 'n';
             }
         } 
     } while (opcao_valida && (resposta == 's' || resposta == 'S'));
     
-    ordenarESalvar(dadosPessoas, numRegistros, false);
+    ordenarESalvar(dadosPessoas.data(), numRegistros, false);
 
     cout << "\033[1;32mObrigado por usar nosso sistema! Ate logo.\033[0m" << endl;
 
-    delete[] dadosPessoas;
     return 0;
 }
