@@ -55,7 +55,7 @@ int lerInteiroValidado(const string& prompt, int minValor, int maxValor, const s
         }
 
         if (!apenas_numeros || tamanho == 0) {
-            cout << "\033[1;31mEntrada inválida. Digite apenas numeros.\033[0m" << endl;
+            cout << "\033[1;31mEntrada inválida. Digite apenas números.\033[0m" << endl;
         } else {
             valor = 0;
             for (int i = 0; i < tamanho; i++) {
@@ -80,7 +80,7 @@ string lerNomeValidado() {
     bool nome_valido;
 
     do {
-        cout << "\033[38;5;208mNome do usuario (apenas letras e espacos): \033[0m" << endl;
+        cout << "\033[38;5;208mNome do usuário (apenas letras e espaços): \033[0m" << endl;
         cin.getline(buffer_nome, 162);
 
         nome_valido = true;
@@ -102,7 +102,7 @@ string lerNomeValidado() {
             }
 
             if (!nome_valido) {
-                cout << "\033[1;31mNome invalido! Use apenas letras e espacos.\033[0m" << endl;
+                cout << "\033[1;31mNome inválido! Use apenas letras e espaços.\033[0m" << endl;
             }
         }
     } while (strlen(buffer_nome) == 0 || !nome_valido);
@@ -144,7 +144,7 @@ string lerCpfValidado(const eventos vetor[], int total, bool checarDuplicidade) 
                     i++;
                 }
                 if (cpf_existente) {
-                    cout << "\033[1;31mCPF ja cadastrado, por favor tente outro!\033[0m" << endl;
+                    cout << "\033[1;31mCPF já cadastrado, por favor tente outro!\033[0m" << endl;
                 } else {
                     cpf_valido = true;
                 }
@@ -152,7 +152,7 @@ string lerCpfValidado(const eventos vetor[], int total, bool checarDuplicidade) 
                 cpf_valido = true;
             }
         } else {
-            cout << "\033[1;31mCPF invalido. Digite novamente (somente numeros, 11 digitos): \033[0m" << endl;
+            cout << "\033[1;31mCPF inválido. Digite novamente (somente números, 11 dígitos): \033[0m" << endl;
         }
     }
 
@@ -183,7 +183,7 @@ enum class EstiloMenuEvento { CADASTRO, EDITAR_ID, EDITAR_CPF };
 // (1-5) ate ser valida, retornando o nome do evento escolhido.
 string escolherEvento(EstiloMenuEvento estilo) {
     if (estilo == EstiloMenuEvento::CADASTRO) {
-        cout << "\033[38;5;208mEventos disponiveis:\033[0m" << endl
+        cout << "\033[38;5;208mEventos disponíveis:\033[0m" << endl
              << "\033[1;33m|1 - " << NOMES_EVENTOS[0] << "\033[0m" << endl
              << "\033[1;33m|2 - " << NOMES_EVENTOS[1] << "\033[0m" << endl
              << "\033[1;33m|3 - " << NOMES_EVENTOS[2] << "\033[0m" << endl
@@ -191,7 +191,7 @@ string escolherEvento(EstiloMenuEvento estilo) {
              << "\033[1;33m|5 - " << NOMES_EVENTOS[4] << "\033[0m" << endl;
     } else {
         cout << endl << "\033[38;5;208mEscolha o tipo de evento!\033[0m" << endl << endl;
-        cout << "\033[1;36mEventos disponiveis:\033[0m" << endl << endl
+        cout << "\033[1;36mEventos disponíveis:\033[0m" << endl << endl
              << "\033[1;38;5;205m1 - " << NOMES_EVENTOS[0] << "\033[0m" << endl
              << "\033[1;38;5;205m2 - " << NOMES_EVENTOS[1] << "\033[0m" << endl
              << "\033[1;38;5;205m3 - " << NOMES_EVENTOS[2] << "\033[0m" << endl
@@ -205,11 +205,11 @@ string escolherEvento(EstiloMenuEvento estilo) {
 
     while (!evento_valido) {
         if (estilo == EstiloMenuEvento::CADASTRO) {
-            cout << "\033[38;5;208mDigite o numero do evento escolhido: \033[0m";
+            cout << "\033[38;5;208mDigite o número do evento escolhido: \033[0m";
         } else if (estilo == EstiloMenuEvento::EDITAR_ID) {
-            cout << endl << " \033[38;5;208mDigite o numero do evento escolhido: \033[0m";
+            cout << endl << " \033[38;5;208mDigite o número do evento escolhido: \033[0m";
         } else {
-            cout << endl << "\033[38;5;208mDigite o numero do evento escolhido: \033[0m";
+            cout << endl << "\033[38;5;208mDigite o número do evento escolhido: \033[0m";
         }
 
         cin >> escolha_evento;
@@ -281,13 +281,9 @@ void imprimeRegistro(const eventos& registro) {
     cout << "\033[1;36m____________________________________________________________________________\033[0m" << endl;
 }
 
-// Imprime o resumo "LOGIN" de um registro apos cadastro/edicao.
-// cabecalho e recebido pronto (com cor) porque o texto varia entre
-// chamadores: "SEU LOGIN:" em cadastro_novo_usuario/editar_usuario_CPF
-// e apenas "LOGIN:" em editar_dados_Id - inconsistencia pre-existente
-// preservada aqui.
-void imprimeResumoLogin(const eventos& registro, const string& cabecalho) {
-    cout << cabecalho << endl
+// Imprime o resumo "SEU LOGIN" de um registro apos cadastro/edicao.
+void imprimeResumoLogin(const eventos& registro) {
+    cout << "\033[92mSEU LOGIN:\033[0m" << endl
          << "\033[92mID:\033[0m " << registro.id_usuario << endl
          << "\033[92mNOME:\033[0m " << registro.nome << endl
          << "\033[92mCPF:\033[0m " << registro.cpf << endl
@@ -307,23 +303,23 @@ void qtd_imprimir(eventos dados[], int numRegistros) {
     int min = 0;
     int max = 0;
 
-    cout << "\033[38;5;208mNumero minimo de posicoes: \033[0m" << "1" << endl;
-    cout << "\033[38;5;208mNumero maximo de posicoes: \033[0m" << numRegistros << endl;
+    cout << "\033[38;5;208mNúmero mínimo de posições: \033[0m" << "1" << endl;
+    cout << "\033[38;5;208mNúmero máximo de posições: \033[0m" << numRegistros << endl;
 
     cin.ignore();
 
-    string mensagemFaixaPosicao = "\033[1;31mPosicao deve estar entre 1 e " + to_string(numRegistros) + ". Tente novamente.\033[0m\n";
+    string mensagemFaixaPosicao = "\033[1;31mPosição deve estar entre 1 e " + to_string(numRegistros) + ". Tente novamente.\033[0m\n";
 
     // verifica se min é um número
-    min = lerInteiroValidado("\033[38;5;208mDeseja que a impressao comece da posicao: \033[0m", 1, numRegistros, mensagemFaixaPosicao);
+    min = lerInteiroValidado("\033[38;5;208mDeseja que a impressão comece da posição: \033[0m", 1, numRegistros, mensagemFaixaPosicao);
 
     //verifica se max é um número
     bool max_valido = false;
     while (!max_valido) {
-        max = lerInteiroValidado("\033[38;5;208mE termine na posicao: \033[0m", 1, numRegistros, mensagemFaixaPosicao);
+        max = lerInteiroValidado("\033[38;5;208mE termine na posição: \033[0m", 1, numRegistros, mensagemFaixaPosicao);
 
         if (max < min) {
-            cout << "\033[1;31mPosicao final deve ser maior ou igual a posicao inicial " << min << ". Tente novamente.\033[0m" << endl;
+            cout << "\033[1;31mPosição final deve ser maior ou igual à posição inicial " << min << ". Tente novamente.\033[0m" << endl;
         } else {
             max_valido = true;
         }
@@ -342,7 +338,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
 
     while (!id_valido) {
         int id = lerInteiroValidado(
-            "\033[38;5;208mCrie seu id pessoal (4 digitos no maximo): \033[0m\n",
+            "\033[38;5;208mCrie seu id pessoal (4 dígitos no máximo): \033[0m\n",
             1, 9999,
             "\033[1;31mId deve ter entre 1 e 9999. Tente novamente.\033[0m\n"
         );
@@ -366,7 +362,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
 
     novo.nome = lerNomeValidado();
 
-    cout << "\033[38;5;208mSeu CPF, sem .(ponto) e -(traco): \033[0m" << endl;
+    cout << "\033[38;5;208mSeu CPF, sem .(ponto) e -(traço): \033[0m" << endl;
     novo.cpf = lerCpfValidado(vetor, numRegistro, true);
 
     bool ano_valido = false;
@@ -376,7 +372,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
         int ano = lerInteiroValidado(
             "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
             1900, ano_max,
-            "\033[1;31mAno invalido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
+            "\033[1;31mAno inválido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
         );
 
         if (ano_max - ano < 18) {
@@ -389,7 +385,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
 
     novo.tipo_evento = escolherEvento(EstiloMenuEvento::CADASTRO);
 
-    imprimeResumoLogin(novo, "\033[92mSEU LOGIN:\033[0m");
+    imprimeResumoLogin(novo);
 
     vetor[numRegistro] = novo;
     salvar_no_arquivo(vetor, numRegistro + 1);
@@ -399,7 +395,7 @@ void cadastro_novo_usuario(eventos novo, eventos vetor[], int numRegistro) {
 void excluir_usuario(eventos dados[], int& total) {
     char cpf_buscado[20];
     
-    cout << "\033[38;5;208mDigite o CPF do usuario a ser excluido: \033[0m";
+    cout << "\033[38;5;208mDigite o CPF do usuário a ser excluído: \033[0m";
     cin.ignore();
     cin.getline(cpf_buscado, 20);
     
@@ -415,14 +411,14 @@ void excluir_usuario(eventos dados[], int& total) {
     }
     
     if (encontrado) {
-        cout << "\033[1;32mUSUARIO ENCONTRADO.\033[0m" << endl;
+        cout << "\033[1;32mUSUÁRIO ENCONTRADO.\033[0m" << endl;
         dados[indice].imprime();
         
         cout << endl;
         
         char resposta;
         cout << "\033[1;31mDeseja realmente excluir esta conta?\033[0m" << endl
-             << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou numero para cancelar a operacao \033[0m";
+             << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou número para cancelar a operação \033[0m";
         cin >> resposta;
         cin.ignore();
         
@@ -436,12 +432,12 @@ void excluir_usuario(eventos dados[], int& total) {
             }
             total--;
             salvar_no_arquivo(dados, total);
-            cout << "\033[1;32mConta excluida com sucesso.\033[0m" << endl;
+            cout << "\033[1;32mConta excluída com sucesso.\033[0m" << endl;
         } else {
-            cout << "\033[1;32mOperacao cancelada! Agradecemos por continuar conosco.:)\033[0m" << endl;
+            cout << "\033[1;32mOperação cancelada! Agradecemos por continuar conosco. :)\033[0m" << endl;
         }
     } else {
-        cout << "\033[1;31mCPF nao encontrado.\033[0m" << endl;
+        cout << "\033[1;31mCPF não encontrado.\033[0m" << endl;
     }
 }
 
@@ -469,15 +465,15 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
     }
     
     if (encontrado == false) {
-        cout << "\033[1;31mId nao encontrado, insira um Id existente: \033[0m";
+        cout << "\033[1;31mId não encontrado, insira um Id existente: \033[0m";
         cin >> id_procurado;
     } else { 
         bool confirma = false;
         while(!confirma) {
             char escolha[2];
 
-            cout << "\033[1;31mAo editar os dados, os mesmos ficarao salvos ao termino dessa aplicacao\033[0m" << endl
-                 << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou numero para cancelar a operacao \033[0m";
+            cout << "\033[1;31mAo confirmar, as alterações serão salvas imediatamente no arquivo\033[0m" << endl
+                 << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou número para cancelar a operação \033[0m";
              
             cin.ignore();
             cin >> escolha;
@@ -496,7 +492,7 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                     int ano = lerInteiroValidado(
                         "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
                         1900, ano_max,
-                        "\033[1;31mAno invalido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
+                        "\033[1;31mAno inválido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
                     );
 
                     if (ano_max - ano < 18) {
@@ -510,14 +506,14 @@ void editar_dados_Id(eventos dados[], int numRegistro) {
                    
                 dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_ID);
 
-                imprimeResumoLogin(dados[indice_encontrado], "\033[92mLOGIN:\033[0m");
+                imprimeResumoLogin(dados[indice_encontrado]);
 
                 salvar_no_arquivo(dados, numRegistro);
                 cout << "\033[1;32mDados atualizados com sucesso!\033[0m" << endl;
                 confirma = true;
             } else {
                 confirma = true;
-                cout << "\033[1;32mOperacao cancelada com sucesso!.\033[0m" << endl;
+                cout << "\033[1;32mOperação cancelada com sucesso!\033[0m" << endl;
             }
         }
     }
@@ -530,7 +526,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
     int pos_final = total - 1;
     bool continuar_busca = true;
 
-    cout << "\033[38;5;208mDigite o CPF do usuario que deseja editar: \033[0m";
+    cout << "\033[38;5;208mDigite o CPF do usuário que deseja editar: \033[0m";
     cin.ignore();
     cin.getline(cpf_buscado, 20);
 
@@ -555,8 +551,8 @@ void editar_usuario_CPF(eventos dados[], int total) {
         return;
     } else {
         char resposta;
-        cout << "\033[1;31mAo editar os dados, os mesmos ficarao salvos ao termino dessa aplicacao\033[0m" << endl
-             << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou numero para cancelar a operacao \033[0m";
+        cout << "\033[1;31mAo confirmar, as alterações serão salvas imediatamente no arquivo\033[0m" << endl
+             << "\033[1;31mDigite 's' para prosseguir ou qualquer outra letra ou número para cancelar a operação \033[0m";
         cin >> resposta;
         cin.ignore();
 
@@ -570,7 +566,7 @@ void editar_usuario_CPF(eventos dados[], int total) {
                 int ano = lerInteiroValidado(
                     "\033[38;5;208mDigite o ano de nascimento: \033[0m\n",
                     1900, ano_max,
-                    "\033[1;31mAno invalido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
+                    "\033[1;31mAno inválido! Digite um ano entre 1900 e " + to_string(ano_max) + ".\033[0m\n"
                 );
 
                 if (ano_max - ano < 18) {
@@ -583,13 +579,13 @@ void editar_usuario_CPF(eventos dados[], int total) {
 
             dados[indice_encontrado].tipo_evento = escolherEvento(EstiloMenuEvento::EDITAR_CPF);
 
-            imprimeResumoLogin(dados[indice_encontrado], "\033[92mSEU LOGIN:\033[0m");
+            imprimeResumoLogin(dados[indice_encontrado]);
 
             // Confirmação antes de salvar
             salvar_no_arquivo(dados, total);
             cout << "\033[1;32mDados atualizados com sucesso!\033[0m" << endl;
         } else {
-            cout << "\033[1;32mOperacao cancelada com sucesso!.\033[0m" << endl;
+            cout << "\033[1;32mOperação cancelada com sucesso!\033[0m" << endl;
         }
     }
 }
@@ -602,6 +598,15 @@ void limparTela() {
 #endif
 }
 
+// Pergunta se o usuário deseja continuar e lê a resposta ('s'/'S' para continuar).
+char perguntarSeContinua() {
+    char resposta;
+    cout << "\n\033[38;5;208mDeseja continuar? Digite 's' para continuar ou qualquer tecla para sair!\033[0m" << endl;
+    cin >> resposta;
+    cin.ignore();
+    return resposta;
+}
+
 int main() {
     eventos pessoa;
     vector<eventos> dadosPessoas;
@@ -611,7 +616,7 @@ int main() {
 
     ifstream arquivo_csv("arquivo_csv_projeto.csv");
     if (!arquivo_csv) {
-        cout << "\033[1;31mArquivo CSV nao esta aberto!\033[0m" << endl;
+        cout << "\033[1;31mArquivo CSV não está aberto!\033[0m" << endl;
     } else {
         getline(arquivo_csv, linha);
 
@@ -640,16 +645,16 @@ int main() {
         cerr << "\033[1;35m                     MENU PRINCIPAL           \033[0m" << endl
              << "\033[1;35m                       Bem-vindo!            \033[0m" << endl
              << "\033[1;35m--------------------------------------------------------\033[0m" << endl
-             << "\033[38;5;208mEscolha uma das opcoes abaixo para continuar:\033[0m" << endl
+             << "\033[38;5;208mEscolha uma das opções abaixo para continuar:\033[0m" << endl
              << endl << endl
              << "\033[1;33m|1 - Para imprimir todos os dados do arquivo.\033[0m" << endl
              << "\033[1;33m|2 - Para se cadastrar.\033[0m" << endl
-             << "\033[1;33m|3 - Para excluir a conta.\033[0m" << endl 
-             << "\033[1;33m|4 - Para buscar e editar os dados de usuario.\033[0m" << endl
+             << "\033[1;33m|3 - Para excluir a conta.\033[0m" << endl
+             << "\033[1;33m|4 - Para buscar e editar os dados de usuário.\033[0m" << endl
              << "\033[1;33m|5 - Para imprimir a quantidade desejada de dados.\033[0m" << endl
              << "\033[1;33m|6 - Para sair.\033[0m" << endl
              << endl
-             << "\033[38;5;208mDigite sua opcao: \033[0m";
+             << "\033[38;5;208mDigite sua opção: \033[0m";
         
         cin >> opcao;
         
@@ -659,11 +664,8 @@ int main() {
                 ordenarESalvar(dadosPessoas.data(), numRegistros, false);
                 imprimeDados(dadosPessoas.data(), numRegistros);
 
-                cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;				
-               
-                cin >> resposta;    
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "2") == 0) {
                 limparTela();
                 if ((int)dadosPessoas.size() <= numRegistros) {
@@ -672,25 +674,19 @@ int main() {
                 cadastro_novo_usuario(pessoa, dadosPessoas.data(), numRegistros);
                 numRegistros++;
 
-                cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
-				
-                cin >> resposta;    
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "3") == 0) {
                 limparTela();
                 excluir_usuario(dadosPessoas.data(), numRegistros);
 
-                cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
-				
-                cin >> resposta;    
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "4") == 0) {
                 limparTela();
-                cout << "\033[38;5;208mDigite sua opcao de busca: \033[0m" << endl
-                     << "\033[38;5;208m|1 - para fazer a buscar por ID \033[0m" << endl
-                     << "\033[38;5;208m|2 - para fazer a buscar por CPF \033[0m" << endl;
+                cout << "\033[38;5;208mDigite sua opção de busca: \033[0m" << endl
+                     << "\033[38;5;208m|1 - para buscar por ID \033[0m" << endl
+                     << "\033[38;5;208m|2 - para buscar por CPF \033[0m" << endl;
                 
                 bool busca_valida = false;
                 
@@ -700,42 +696,30 @@ int main() {
                     if (strlen(opcao_busca) == 1 && (opcao_busca[0] == '1' || opcao_busca[0] == '2')) {
                         if (strcmp(opcao_busca, "1") == 0) {
                             ordenarESalvar(dadosPessoas.data(), numRegistros, false);
-                            editar_dados_Id(dadosPessoas.data(), numRegistros);    
+                            editar_dados_Id(dadosPessoas.data(), numRegistros);
 
-                            cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
-                                 << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
-                            
-                            cin >> resposta;
-                            cin.ignore();
+                            resposta = perguntarSeContinua();
                             busca_valida = true;
                         } 
                         else {
                             ordenarESalvar(dadosPessoas.data(), numRegistros, true);
                             editar_usuario_CPF(dadosPessoas.data(), numRegistros);
 
-                            cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
-                                 << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
-                            
-                            cin >> resposta;
-                            cin.ignore();
+                            resposta = perguntarSeContinua();
                             busca_valida = true;
                         }
                     } 
                     else {
-                        cout << "\033[1;31mOpcao de busca invalida!\033[0m" << endl 
-                             << "\033[1;31mSelecione uma opcao valida!\033[0m" << endl;
+                        cout << "\033[1;31mOpção de busca inválida!\033[0m" << endl
+                             << "\033[1;31mSelecione uma opção válida!\033[0m" << endl;
                     }
                 } 
             }
             else if (strcmp(opcao, "5") == 0) {
                 limparTela();
                 qtd_imprimir(dadosPessoas.data(), numRegistros);
-                cout << "\n\033[38;5;208mDeseja realizar outra operacao?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operacao ou qualquer outra letra ou numero caso queira encerrar o sistema! \033[0m" << endl;
-
-                cin >> resposta;
-                cin.ignore();
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "6") == 0) {
                 ordenarESalvar(dadosPessoas.data(), numRegistros, false);
                 opcao_valida = false;
@@ -746,7 +730,7 @@ int main() {
     
     ordenarESalvar(dadosPessoas.data(), numRegistros, false);
 
-    cout << "\033[1;32mObrigado por usar nosso sistema! Ate logo.\033[0m" << endl;
+    cout << "\033[1;32mObrigado por usar nosso sistema! Até logo.\033[0m" << endl;
 
     return 0;
 }
