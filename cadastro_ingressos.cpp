@@ -598,6 +598,15 @@ void limparTela() {
 #endif
 }
 
+// Pergunta se o usuário deseja continuar e lê a resposta ('s'/'S' para continuar).
+char perguntarSeContinua() {
+    char resposta;
+    cout << "\n\033[38;5;208mDeseja continuar? Digite 's' para continuar ou qualquer tecla para sair!\033[0m" << endl;
+    cin >> resposta;
+    cin.ignore();
+    return resposta;
+}
+
 int main() {
     eventos pessoa;
     vector<eventos> dadosPessoas;
@@ -655,11 +664,8 @@ int main() {
                 ordenarESalvar(dadosPessoas.data(), numRegistros, false);
                 imprimeDados(dadosPessoas.data(), numRegistros);
 
-                cout << "\n\033[38;5;208mDeseja realizar outra operação?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operação ou qualquer outra letra ou número caso queira encerrar o sistema! \033[0m" << endl;				
-               
-                cin >> resposta;    
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "2") == 0) {
                 limparTela();
                 if ((int)dadosPessoas.size() <= numRegistros) {
@@ -668,20 +674,14 @@ int main() {
                 cadastro_novo_usuario(pessoa, dadosPessoas.data(), numRegistros);
                 numRegistros++;
 
-                cout << "\n\033[38;5;208mDeseja realizar outra operação?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operação ou qualquer outra letra ou número caso queira encerrar o sistema! \033[0m" << endl;
-				
-                cin >> resposta;    
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "3") == 0) {
                 limparTela();
                 excluir_usuario(dadosPessoas.data(), numRegistros);
 
-                cout << "\n\033[38;5;208mDeseja realizar outra operação?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operação ou qualquer outra letra ou número caso queira encerrar o sistema! \033[0m" << endl;
-				
-                cin >> resposta;    
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "4") == 0) {
                 limparTela();
                 cout << "\033[38;5;208mDigite sua opção de busca: \033[0m" << endl
@@ -696,24 +696,16 @@ int main() {
                     if (strlen(opcao_busca) == 1 && (opcao_busca[0] == '1' || opcao_busca[0] == '2')) {
                         if (strcmp(opcao_busca, "1") == 0) {
                             ordenarESalvar(dadosPessoas.data(), numRegistros, false);
-                            editar_dados_Id(dadosPessoas.data(), numRegistros);    
+                            editar_dados_Id(dadosPessoas.data(), numRegistros);
 
-                            cout << "\n\033[38;5;208mDeseja realizar outra operação?\033[0m" << endl
-                                 << "\n\033[38;5;208mDigite 's' para realizar outra operação ou qualquer outra letra ou número caso queira encerrar o sistema! \033[0m" << endl;
-                            
-                            cin >> resposta;
-                            cin.ignore();
+                            resposta = perguntarSeContinua();
                             busca_valida = true;
                         } 
                         else {
                             ordenarESalvar(dadosPessoas.data(), numRegistros, true);
                             editar_usuario_CPF(dadosPessoas.data(), numRegistros);
 
-                            cout << "\n\033[38;5;208mDeseja realizar outra operação?\033[0m" << endl
-                                 << "\n\033[38;5;208mDigite 's' para realizar outra operação ou qualquer outra letra ou número caso queira encerrar o sistema! \033[0m" << endl;
-                            
-                            cin >> resposta;
-                            cin.ignore();
+                            resposta = perguntarSeContinua();
                             busca_valida = true;
                         }
                     } 
@@ -726,12 +718,8 @@ int main() {
             else if (strcmp(opcao, "5") == 0) {
                 limparTela();
                 qtd_imprimir(dadosPessoas.data(), numRegistros);
-                cout << "\n\033[38;5;208mDeseja realizar outra operação?\033[0m" << endl
-                     << "\n\033[38;5;208mDigite 's' para realizar outra operação ou qualquer outra letra ou número caso queira encerrar o sistema! \033[0m" << endl;
-
-                cin >> resposta;
-                cin.ignore();
-            } 
+                resposta = perguntarSeContinua();
+            }
             else if (strcmp(opcao, "6") == 0) {
                 ordenarESalvar(dadosPessoas.data(), numRegistros, false);
                 opcao_valida = false;
